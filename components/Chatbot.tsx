@@ -55,18 +55,21 @@ export default function Chatbot() {
     try {
       // Weather context for RajnishBot
       const weather = getWeatherContext()
+      // System prompt for concise, bullet-pointed answers
+      const systemPrompt =
+        "You are SwaRa❤️, a friendly assistant for the Weather App. Always answer in short, concise bullet points unless the user requests a long or detailed answer. If the user says 'expand', 'give details', or 'long answer', then provide a longer, more detailed response. If the user asks about the weather, use this context: " + (weather ? JSON.stringify(weather) : "No weather data available.")
       const res = await fetch("/api/chatbot", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           messages: [
-            { role: "system", content: `You are SwaRa❤️, a friendly assistant for the Weather App. If the user asks about the weather, use this context: ${weather ? JSON.stringify(weather) : "No weather data available."}` },
+            { role: "system", content: systemPrompt },
             ...[...messages, userMsg].map((m: { from: string; text: string }) => ({ role: m.from === "user" ? "user" : "assistant", content: m.text }))
           ]
         }),
       })
       const data = await res.json()
-      console.log('OpenAI API response:', data) // Debug log
+      console.log('Gemini API response:', data) // Debug log
       let botMsg = data.choices?.[0]?.message?.content
       if (!botMsg && data.error) botMsg = `Error: ${data.error}`
       if (!botMsg) botMsg = "Sorry, I couldn't understand that."
@@ -88,6 +91,16 @@ export default function Chatbot() {
     })
   }
 
+  // Clear all chat history
+  function clearChat() {
+    setMessages([
+      { from: "bot", text: "Hi! I'm SwaRa❤️. How can I help you today?" }
+    ])
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("rajnishbot-history")
+    }
+  }
+
   return (
     <>
       {/* Floating Button */}
@@ -106,7 +119,10 @@ export default function Chatbot() {
               {AVATAR}
               SwaRa<span aria-hidden="true" style={{marginLeft: 4}}>❤️</span>
             </div>
-            <button onClick={() => setOpen(false)} aria-label="Close chat" className="hover:scale-110 transition-transform"><X className="w-5 h-5 text-gray-900" /></button>
+            <div className="flex items-center gap-2">
+              <button onClick={clearChat} aria-label="Clear chat" className="hover:scale-110 transition-transform text-gray-900 hover:text-red-500"><svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg></button>
+              <button onClick={() => setOpen(false)} aria-label="Close chat" className="hover:scale-110 transition-transform"><X className="w-5 h-5 text-gray-900" /></button>
+            </div>
           </div>
           <div ref={chatRef} className="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50 dark:bg-gray-900" style={{ maxHeight: 400, minHeight: 200 }}>
             {messages.map((msg: { from: string; text: string }, i: number) => {
