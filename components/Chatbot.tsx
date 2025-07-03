@@ -79,7 +79,7 @@ export default function Chatbot() {
     <>
       {/* Floating Button */}
       <button
-        className={`fixed bottom-20 right-6 z-60 rounded-full shadow-lg bg-gradient-to-br from-blue-500 to-blue-700 text-white p-4 transition-transform duration-300 ${open ? "scale-90 opacity-60" : "scale-100 hover:scale-110"}`}
+        className={`fixed bottom-20 right-6 z-[9999] rounded-full shadow-lg bg-yellow-400 hover:bg-yellow-500 text-gray-900 p-4 transition-transform duration-300 ${open ? "scale-90 opacity-60" : "scale-100 hover:scale-110"}`}
         aria-label="Open RajnishBot Chat"
         onClick={() => setOpen((v) => !v)}
       >
@@ -87,19 +87,19 @@ export default function Chatbot() {
       </button>
       {/* Chat Window */}
       {open && (
-        <div className="fixed bottom-36 right-6 z-60 w-80 max-w-[95vw] bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 flex flex-col animate-fade-in-up">
-          <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-gray-800 bg-gradient-to-r from-blue-500 to-blue-700 text-white rounded-t-2xl">
+        <div className="fixed bottom-36 right-6 z-[9999] w-80 max-w-[95vw] bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 flex flex-col animate-fade-in-up">
+          <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-gray-800 bg-gradient-to-r from-yellow-400 to-yellow-500 text-gray-900 dark:text-gray-900 rounded-t-2xl">
             <div className="flex items-center gap-2 font-bold text-lg">
               {AVATAR}
               SwaRa<span aria-hidden="true" style={{marginLeft: 4}}>❤️</span>
             </div>
-            <button onClick={() => setOpen(false)} aria-label="Close chat" className="hover:scale-110 transition-transform"><X className="w-5 h-5" /></button>
+            <button onClick={() => setOpen(false)} aria-label="Close chat" className="hover:scale-110 transition-transform"><X className="w-5 h-5 text-gray-900" /></button>
           </div>
           <div ref={chatRef} className="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50 dark:bg-gray-900">
             {messages.map((msg: { from: string; text: string }, i: number) => (
               <div key={i} className={`flex ${msg.from === "user" ? "justify-end" : "justify-start"}`}>
                 {msg.from === "bot" && AVATAR}
-                <div className={`max-w-[70%] px-4 py-2 rounded-2xl shadow text-sm ${msg.from === "user" ? "bg-blue-500 text-white ml-auto" : "bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 ml-2"}`}>
+                <div className={`max-w-[70%] px-4 py-2 rounded-2xl shadow text-sm ${msg.from === "user" ? "bg-yellow-400 text-gray-900 ml-auto" : "bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 ml-2"}`}>
                   {msg.text}
                 </div>
               </div>
@@ -110,7 +110,7 @@ export default function Chatbot() {
           </div>
           <form onSubmit={sendMessage} className="flex items-center gap-2 p-3 border-t border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 rounded-b-2xl">
             <input
-              className="flex-1 rounded-full px-4 py-2 border border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-400 placeholder:text-gray-500 dark:placeholder:text-gray-400"
+              className="flex-1 rounded-full px-4 py-2 border border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-yellow-400 placeholder:text-gray-500 dark:placeholder:text-gray-400"
               placeholder="Ask me anything..."
               value={input}
               onChange={e => setInput(e.target.value)}
@@ -118,7 +118,7 @@ export default function Chatbot() {
               aria-label="Type your message"
               autoFocus
             />
-            <button type="submit" className="p-2 rounded-full bg-blue-500 hover:bg-blue-600 text-white disabled:opacity-50" disabled={loading || !input.trim()} aria-label="Send message">
+            <button type="submit" className="p-2 rounded-full bg-yellow-400 hover:bg-yellow-500 text-gray-900 disabled:opacity-50" disabled={loading || !input.trim()} aria-label="Send message">
               <Send className="w-5 h-5" />
             </button>
           </form>
