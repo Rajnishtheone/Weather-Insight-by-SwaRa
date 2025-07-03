@@ -2,29 +2,41 @@ import { NextRequest, NextResponse } from "next/server"
 
 export async function POST(req: NextRequest) {
   const { messages } = await req.json()
-  const apiKey = process.env.OPENAI_API_KEY
+  const apiKey = process.env.GEMINI_API_KEY
   if (!apiKey) {
-    return NextResponse.json({ error: "OpenAI API key not set." }, { status: 500 })
+    return NextResponse.json({ error: "Gemini API key not set." }, { status: 500 })
   }
+
+  // Convert your chat history to Gemini's format (just send the latest user message for now)
+  const userMessage = messages?.[messages.length - 1]?.content || ""
+
   try {
-    const openaiRes = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        model: "gpt-4o-mini",
-        messages,
-        max_tokens: 256,
-      }),
-    })
-    const data = await openaiRes.json()
-    if (!data.choices && data.error) {
-      return NextResponse.json({ error: data.error.message }, { status: 500 })
-    }
-    return NextResponse.json(data)
+    const geminiRes = await fetch(
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + apiKey,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [
+                { text: userMessage }
+              ]
+            }
+          ]
+        }),
+      }
+    )
+    const data = await geminiRes.json()
+    // Gemini's response format
+    const botMsg =
+      data.candidates?.[0]?.content?.parts?.[0]?.text ||
+      data.error?.message ||
+      "Sorry, I couldn't understand that."
+    return NextResponse.json({ choices: [{ message: { content: botMsg } }] })
   } catch (err) {
-    return NextResponse.json({ error: "Failed to contact OpenAI." }, { status: 500 })
+    return NextResponse.json({ error: "Failed to contact Gemini." }, { status: 500 })
   }
 } 
