@@ -14,12 +14,15 @@ export async function POST(req: NextRequest) {
         "Authorization": `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: "gpt-3.5-turbo",
+        model: "gpt-4o-mini",
         messages,
         max_tokens: 256,
       }),
     })
     const data = await openaiRes.json()
+    if (!data.choices && data.error) {
+      return NextResponse.json({ error: data.error.message }, { status: 500 })
+    }
     return NextResponse.json(data)
   } catch (err) {
     return NextResponse.json({ error: "Failed to contact OpenAI." }, { status: 500 })
