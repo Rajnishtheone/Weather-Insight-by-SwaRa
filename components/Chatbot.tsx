@@ -66,13 +66,26 @@ export default function Chatbot() {
         }),
       })
       const data = await res.json()
-      const botMsg = data.choices?.[0]?.message?.content || "Sorry, I couldn't understand that."
+      console.log('OpenAI API response:', data) // Debug log
+      let botMsg = data.choices?.[0]?.message?.content
+      if (!botMsg && data.error) botMsg = `Error: ${data.error}`
+      if (!botMsg) botMsg = "Sorry, I couldn't understand that."
       setMessages((msgs: { from: string; text: string }[]) => [...msgs, { from: "bot", text: botMsg }])
     } catch (err) {
       setMessages((msgs: { from: string; text: string }[]) => [...msgs, { from: "bot", text: "Sorry, there was an error. Please try again." }])
     } finally {
       setLoading(false)
     }
+  }
+
+  // Delete the most recent user message
+  function deleteLastUserMessage() {
+    setMessages((msgs: { from: string; text: string }[]) => {
+      const lastUserIdx = [...msgs].reverse().findIndex(m => m.from === 'user')
+      if (lastUserIdx === -1) return msgs
+      const idx = msgs.length - 1 - lastUserIdx
+      return msgs.filter((_, i) => i !== idx)
+    })
   }
 
   return (
@@ -95,15 +108,21 @@ export default function Chatbot() {
             </div>
             <button onClick={() => setOpen(false)} aria-label="Close chat" className="hover:scale-110 transition-transform"><X className="w-5 h-5 text-gray-900" /></button>
           </div>
-          <div ref={chatRef} className="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50 dark:bg-gray-900">
-            {messages.map((msg: { from: string; text: string }, i: number) => (
-              <div key={i} className={`flex ${msg.from === "user" ? "justify-end" : "justify-start"}`}>
-                {msg.from === "bot" && AVATAR}
-                <div className={`max-w-[70%] px-4 py-2 rounded-2xl shadow text-sm ${msg.from === "user" ? "bg-yellow-400 text-gray-900 ml-auto" : "bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 ml-2"}`}>
-                  {msg.text}
+          <div ref={chatRef} className="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50 dark:bg-gray-900" style={{ maxHeight: 400, minHeight: 200 }}>
+            {messages.map((msg: { from: string; text: string }, i: number) => {
+              const isLastUser = msg.from === 'user' && i === messages.map(m => m.from).lastIndexOf('user')
+              return (
+                <div key={i} className={`flex ${msg.from === "user" ? "justify-end" : "justify-start"} items-center`}>
+                  {msg.from === "bot" && AVATAR}
+                  <div className={`max-w-[70%] px-4 py-2 rounded-2xl shadow text-sm ${msg.from === "user" ? "bg-yellow-400 text-gray-900 ml-auto" : "bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 ml-2"}`}>
+                    {msg.text}
+                  </div>
+                  {isLastUser && (
+                    <button onClick={deleteLastUserMessage} aria-label="Delete message" className="ml-2 text-gray-400 hover:text-red-500"><svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg></button>
+                  )}
                 </div>
-              </div>
-            ))}
+              )
+            })}
             {loading && (
               <div className="flex items-center gap-2 text-gray-400 text-xs"><Bot className="w-4 h-4 animate-bounce" /> SwaRa is typing...</div>
             )}
