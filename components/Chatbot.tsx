@@ -79,7 +79,7 @@ export default function Chatbot() {
     <>
       {/* Floating Button */}
       <button
-        className={`fixed bottom-6 right-6 z-50 rounded-full shadow-lg bg-gradient-to-br from-blue-500 to-blue-700 text-white p-4 transition-transform duration-300 ${open ? "scale-90 opacity-60" : "scale-100 hover:scale-110"}`}
+        className={`fixed bottom-20 right-6 z-60 rounded-full shadow-lg bg-gradient-to-br from-blue-500 to-blue-700 text-white p-4 transition-transform duration-300 ${open ? "scale-90 opacity-60" : "scale-100 hover:scale-110"}`}
         aria-label="Open RajnishBot Chat"
         onClick={() => setOpen((v) => !v)}
       >
@@ -87,7 +87,7 @@ export default function Chatbot() {
       </button>
       {/* Chat Window */}
       {open && (
-        <div className="fixed bottom-24 right-6 z-50 w-80 max-w-[95vw] bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 flex flex-col animate-fade-in-up">
+        <div className="fixed bottom-36 right-6 z-60 w-80 max-w-[95vw] bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 flex flex-col animate-fade-in-up">
           <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-gray-800 bg-gradient-to-r from-blue-500 to-blue-700 text-white rounded-t-2xl">
             <div className="flex items-center gap-2 font-bold text-lg">
               {AVATAR}
@@ -110,7 +110,7 @@ export default function Chatbot() {
           </div>
           <form onSubmit={sendMessage} className="flex items-center gap-2 p-3 border-t border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 rounded-b-2xl">
             <input
-              className="flex-1 rounded-full px-4 py-2 border border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="flex-1 rounded-full px-4 py-2 border border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-400 placeholder:text-gray-500 dark:placeholder:text-gray-400"
               placeholder="Ask me anything..."
               value={input}
               onChange={e => setInput(e.target.value)}
