@@ -2,10 +2,14 @@
 import { useTheme } from "next-themes";
 import { Toggle } from "@/components/ui/toggle";
 import { Sun, Moon } from "lucide-react";
+import { useEffect, useState } from "react";
 
 export default function ThemeToggle() {
   const { theme, setTheme, resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
   const isDark = resolvedTheme === "dark";
+  if (!mounted) return null;
   return (
     <Toggle
       aria-label="Toggle dark mode"

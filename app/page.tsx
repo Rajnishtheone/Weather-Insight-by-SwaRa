@@ -171,13 +171,11 @@ export default function WeatherApp() {
   }, [timerRunning, timerTimeLeft])
 
   // Temperature conversion functions
-  const convertTemperature = (temp: number, fromUnit: "K" | "C" | "F" = "K", toUnit: "C" | "F" = "C") => {
+  const convertTemperature = (temp: number, fromUnit: "C" | "F" = "C", toUnit: "C" | "F" = "C") => {
     let celsius = temp
 
     // Convert to Celsius first
-    if (fromUnit === "K") {
-      celsius = temp - 273.15
-    } else if (fromUnit === "F") {
+    if (fromUnit === "F") {
       celsius = ((temp - 32) * 5) / 9
     }
 
@@ -189,7 +187,7 @@ export default function WeatherApp() {
   }
 
   const formatTemperature = (temp: number) => {
-    const converted = convertTemperature(temp, "K", temperatureUnit)
+    const converted = convertTemperature(temp, "C", temperatureUnit)
     return `${Math.round(converted)}°${temperatureUnit}`
   }
 
@@ -334,6 +332,9 @@ export default function WeatherApp() {
     fetchWeather("New York", 40.7128, -74.006)
   }, [])
 
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-400 via-blue-500 to-blue-600 p-4">
       <div className="max-w-7xl mx-auto">
@@ -346,8 +347,14 @@ export default function WeatherApp() {
 
           {/* Current Time Display */}
           <div className="text-right text-white">
-            <div className="text-2xl font-bold">{currentTime.toLocaleTimeString()}</div>
-            <div className="text-sm opacity-80">{currentTime.toLocaleDateString()}</div>
+            {mounted ? (
+              <>
+                <div className="text-2xl font-bold">{currentTime.toLocaleTimeString()}</div>
+                <div className="text-sm opacity-80">{currentTime.toLocaleDateString()}</div>
+              </>
+            ) : (
+              <div className="text-2xl font-bold">--:--:--</div>
+            )}
           </div>
 
           <Button
