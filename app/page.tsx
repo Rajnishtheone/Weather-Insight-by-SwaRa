@@ -232,6 +232,7 @@ export default function WeatherApp() {
 
   // Fetch weather data
   const fetchWeather = async (city: string, lat?: number, lon?: number) => {
+    console.log("Fetching weather for:", city, lat, lon);
     setLoading(true)
     setError(null)
     try {
@@ -284,8 +285,9 @@ export default function WeatherApp() {
 
   // Handle city selection
   const handleCitySelect = (city: City) => {
-    setSearchQuery(`${city.name}, ${city.country}`)
-    fetchWeather(city.name, city.lat, city.lon)
+    console.log("Selected city:", city);
+    setSearchQuery(`${city.name}, ${city.country}`);
+    fetchWeather(city.name, city.lat, city.lon);
   }
 
   // Timer controls
@@ -449,7 +451,7 @@ export default function WeatherApp() {
                   onChange={handleSearchChange}
                   className="pl-10 pr-4 py-3 w-full rounded-lg border-0 shadow-lg"
                   onFocus={() => setShowSuggestions(true)}
-                  onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+                  onBlur={() => setTimeout(() => setShowSuggestions(false), 500)}
                 />
               </div>
 
