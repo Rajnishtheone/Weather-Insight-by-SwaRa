@@ -14,7 +14,7 @@ export default function ThemeToggle() {
     <Toggle
       aria-label="Toggle dark mode"
       pressed={isDark}
-      onPressedChange={() => setTheme(isDark ? "light" : "dark")}
+      onPressedChange={() => setTheme(isDark ? "dark" : "light")}
       className="fixed left-4 bottom-4 z-50 bg-white/80 dark:bg-gray-900/80 border border-gray-300 dark:border-gray-700 shadow-lg rounded-full p-2 flex items-center justify-center transition-colors"
       size="sm"
       variant="outline"
